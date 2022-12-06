@@ -9,23 +9,21 @@ import java.util.Scanner;
 
 public class Main {
 
-    //s = "D:\\transfer-DoNotTouchThisFolder\\0005ffc8449a3e95a1274aaceb7037f9\\2219C649-BAA2-4DFD-9204-365CD0701694.jpeg  ";
-    //int pos1 = s.indexOf("DoNotTouchThisFolder") + "DoNotTouchThisFolder\\".length();;
-    //s = "C:\\Users\\AlvinNg\\verify\\test\\test1\\CB718C312BA1B3622ECFDCBF727465F2\\Duke.png";
-    public static final int HASH_INITIAL_CAP = 1000;
+    //** s = "C:\\Users\\AlvinNg\\verify\\test\\test1\\CB718C312BA1B3622ECFDCBF727465F2\\Duke.png";
+    public static final int HASH_INITIAL_CAP = 3000;
     public String primaryPath;
     public String targetPath;
     public HashMap<String, String> hashmap;
 
     public void inputPath() {
-        Scanner keyboard = new Scanner(System.in);
+        var keyboard = new Scanner(System.in);
         System.out.print(" Enter primary path name: ");
         primaryPath = keyboard.nextLine();
-        //primaryPath = "D:\\temp";
+        //** primaryPath = "D:\\temp";
 
         System.out.print(" Enter target path name: ");
         targetPath = keyboard.nextLine();
-        //targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1";
+        //** targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1";
     }
 
     public void putFilesToMem() {
@@ -33,12 +31,12 @@ public class Main {
         int count = 0;
         Scanner fileIn = null;
 
-        File dirfile = new File(primaryPath + "\\");
+        var dirfile = new File(primaryPath + "\\");
         if (dirfile.isDirectory()) {
             str = dirfile.getName();
-            for (String str2 : dirfile.list()) {
+            for (var str2 : dirfile.list()) {
                 System.out.println(">> " + str2);
-                String filePath = (primaryPath + "\\" + str2);
+                var filePath = (primaryPath + "\\" + str2);
 
                 try {
                     fileIn = new Scanner(
@@ -68,55 +66,74 @@ public class Main {
             System.out.println("Primary directory NOT correct!");
             System.exit(0);
         }
-        // System.out.println(">> row count: " + count);
+        System.out.println(">> row count: " + count);
     }
 
     public boolean subStringPutToHash(String s) {
-        String filename, key, sub;
+        String filename, mkey, sub;
 
         sub = s.substring(0, s.lastIndexOf("\\"));
-        key = sub.substring(sub.lastIndexOf("\\") + 1); // CB718C312BA1B3622ECFDCBF727465F2
+        mkey = sub.substring(sub.lastIndexOf("\\") + 1); // CB718C312BA1B3622ECFDCBF727465F2
         filename = s.substring(s.lastIndexOf("\\") + 1); // Duke.png
 
         // check if right key lgth
-        if (key.length() != 32) {
-            System.err.println(">> keyLgth err: " + s);
+        var keylgth = mkey.length();
+
+        //  modified double char to single
+        if (keylgth > 64) {
+            var ss = "";
+            for (var a : mkey.toCharArray()) {
+                ss += (Integer.valueOf(a) != 0) ? (a) : ("");
+            }
+            mkey.equals(ss);
+            keylgth = ss.length();
+        }
+
+        if (hashmap.containsKey(mkey)) {
+            System.err.println("> duplicate key: " + s);
+            return false;
+        } else if (keylgth == 32) { // true if key length is 32
+            hashmap.put(mkey, filename.toLowerCase());
+            //**/ System.out.println(">> Primary >> mkey: " + mkey + " | filename: " + filename);
+            return true;
+        } else {
+            System.err.println("> key lgth err: " + s);
             return false;
         }
-//        System.out.print(">> Primary >> key : " + key);
-//        System.out.println("     filename : " + filename);
-
-        hashmap.put(key, filename.toLowerCase());
-        
-        return true;
     }
 
     public void targetFilesVerifyByHash() {
-        File mainfile = new File(targetPath);
+        var mainfile = new File(targetPath);
+        int lgth = 0, count = 0;
 
         if (mainfile.isDirectory()) {
-            int lgth = mainfile.list().length;
-            System.out.print(lgth + " ");
+            lgth = mainfile.list().length;
+            System.out.println("\nWill scan thru " + lgth + " directories:");
         } else {
             System.out.println("Target directory NOT correct!");
             System.exit(0);
         }
 
-        for (String str : mainfile.list()) {
+        for (var str : mainfile.list()) {
             String tagKey = "", tagFilename = "";
 
-            File dirfile = new File(mainfile + "\\" + str);
+            // monitoring
+            count = (count <= 0) ? count = lgth / 100 : count--;
+            System.out.print((count <= 0) ? "." : "");
+
+            var dirfile = new File(mainfile + "\\" + str);
             if (dirfile.isDirectory()) {
                 tagKey = dirfile.getName().toLowerCase();
-                for (String str2 : dirfile.list()) {
-                    File subfile = new File(dirfile + "\\" + str2);
+                for (var str2 : dirfile.list()) {
+                    var subfile = new File(dirfile + "\\" + str2);
                     tagFilename = subfile.getName();
-//                    System.out.print(">> target  key : " + tagKey);
-//                    System.out.println("      name : " + tagFilename);
+                    //** System.out.println(">> target  key: " + tagKey + " | name: " + tagFilename);
 
+                    // if there IS match from hashmap, will log error message.
                     if (hashmap.containsKey(tagKey)) {
                         if (hashmap.get(tagKey).equalsIgnoreCase(tagFilename)) {
-                            System.err.println(">> matched: " + targetPath + "\\" + str + "\\" + tagFilename);
+                            System.err.println(">> matched: " + targetPath + "\\" + str
+                                    + "\\" + tagFilename);
                         } else {
                             System.err.println(">> same key err: " + targetPath + "\\" + str);
                         }
@@ -133,30 +150,31 @@ public class Main {
      */
     public static void main(String args[]) {
         PrintStream errStream = null;
-        String logfile = "logmessages.txt";
+        var logfile = "logmessages.txt";
         try {
             errStream = new PrintStream(
-                            new FileOutputStream(logfile));
+                    new FileOutputStream(logfile));
         } catch (FileNotFoundException e) {
             System.out.println("Error opening file with FileOutputStream.");
             System.exit(0);
         }
         System.setErr(errStream);
 
-        Main m = new Main();
+        var m = new Main();
         m.inputPath();
-        System.out.println("\n>> primaryPath: " + m.primaryPath);
-        System.out.println(">> targetPath: " + m.targetPath);
 
         System.out.println("\nSubString key and name, to hashmap.");
         m.hashmap = new HashMap<>(HASH_INITIAL_CAP);
-        m.putFilesToMem();
         
+        System.err.println("\n> primaryPath: " + m.primaryPath);
+        m.putFilesToMem();
         System.out.println("Hashmap size: " + m.hashmap.size());
-        m.targetFilesVerifyByHash();
 
-        errStream.close();
+        System.err.println("\n>> targetPath: " + m.targetPath);
+        m.targetFilesVerifyByHash();
         System.out.println("\nCompleted, check on " + logfile + " for error msg.");
+        
+        errStream.close();
     }
 }
 /*
@@ -164,13 +182,13 @@ run:
  Enter primary path name: D:\temp
  Enter target path name: C:\Users\AlvinNg\verify\test\test1
 
->> primaryPath: D:\temp
->> targetPath: C:\Users\AlvinNg\verify\test\test1
-
 SubString key and name, to hashmap.
 >> md5chksum.txt
+>> row count: 4
 Hashmap size: 2
-2 
+
+Will scan thru 2 directories:
+..
 Completed, check on logmessages.txt for error msg.
-BUILD SUCCESSFUL (total time: 11 seconds)
+BUILD SUCCESSFUL (total time: 14 seconds)
  */
