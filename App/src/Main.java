@@ -10,29 +10,21 @@ import java.util.Scanner;
 
 public class Main {
 
-    /* s = "C:\\Users\\AlvinNg\\verify\\test\\test1\\CB718C312BA1B3622ECFDCBF727465F2\\Duke.png"; */
     private static final PrintStream OUT = System.out;
     private static final int HASH_INITIAL_CAP = 70000;
-    public String primaryPath;
-    public String targetPath;
-    public HashMap<String, ArrayList<String>> hashmap;
+    public HashMap<String, ArrayList<String>> hashmap = new HashMap<>(HASH_INITIAL_CAP);
 
-    public void inputPath() {
-        var keyboard = new Scanner(System.in);
-        OUT.print(" Enter primary path name: ");
-        /* * primaryPath = "D:\\temp";  // */ //
-        primaryPath = keyboard.nextLine();
-        OUT.print(" Enter target path name: ");
-        /* * targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1"; // */ //        targetPath = keyboard.nextLine();
-        /* * targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808"; // */ //
-        targetPath = keyboard.nextLine();
-    }
-
-    public void putFilesToMem() {
+    /**
+     *
+     * @param primaryPath
+     */
+    public void putFilesToMem(String primaryPath) {
         String str, textLine;
         int count = 0;
         Scanner fileIn = null;
 
+        OUT.println("\nSubString key and name, to hashmap.");
+        System.err.println("\n> primaryPath: " + primaryPath);
         var dirfile = new File(primaryPath + "\\");
         if (dirfile.isDirectory()) {
             str = dirfile.getName();
@@ -71,9 +63,10 @@ public class Main {
             System.exit(0);
         }
         OUT.println("> row count: " + count);
+        OUT.println("> Hashmap size: " + hashmap.size());
     }
 
-    public boolean subStringPutToHash(String s) {
+    private boolean subStringPutToHash(String s) {
         String filename, mkey, sub;
         try {
             sub = s.substring(0, s.lastIndexOf("\\"));
@@ -105,7 +98,6 @@ public class Main {
             }
             hashmap.get(mkey).add(filename.toLowerCase());
 
-            /* * OUT.println(">> Primary >> mkey: " + mkey + " | filename: " + filename); // */
             return true;
         } else {
             System.err.print("> key lgth err: " + s);
@@ -113,7 +105,12 @@ public class Main {
         }
     }
 
-    public void targetFilesVerifyByHash() {
+    /**
+     *
+     * @param targetPath
+     */
+    public void targetFilesVerifyByHash(String targetPath) {
+        System.err.println("\n>> targetPath: " + targetPath);
         var mainfile = new File(targetPath);
         int lgth = 0, count = 0;
 
@@ -137,7 +134,6 @@ public class Main {
                 for (var str2 : dirfile.list()) {
                     var subfile = new File(dirfile + "\\" + str2);
                     tagFilename = subfile.getName();
-                    /* * OUT.println(">> target key: " + tagKey + " | name: " + tagFilename); // */
 
                     // if there IS match from hashmap, will log error message.
                     if (hashmap.containsKey(tagKey)) {
@@ -161,6 +157,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        var m = new Main();
+
         PrintStream errStream = null;
         var logfile = "logmessages.txt";
         try {
@@ -172,71 +170,74 @@ public class Main {
         }
         System.setErr(errStream);
 
-        var m = new Main();
-        m.inputPath();
+        m.putFilesToMem("D:\\temp");
+        m.targetFilesVerifyByHash("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808");
+        m.targetFilesVerifyByHash("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
 
-        OUT.println("\nSubString key and name, to hashmap.");
-        m.hashmap = new HashMap<>(HASH_INITIAL_CAP);
-
-        System.err.println("\n> primaryPath: " + m.primaryPath);
-        m.putFilesToMem();
-        OUT.println("Hashmap size: " + m.hashmap.size());
-
-        System.err.println("\n>> targetPath: " + m.targetPath);
-        m.targetFilesVerifyByHash();
         OUT.println("\nCompleted, check on " + logfile + " for error msg.");
-
         errStream.close();
     }
 }
 
 /*
 run:
- Enter primary path name: D:\temp2
- Enter target path name: C:\Users\AlvinNg\verify\test\test1
 
 SubString key and name, to hashmap.
-> md5chksum.txt
-> row count: 6
-Hashmap size: 3
+> PhotoID-20181201.txt
+> PhotoID-20181207.txt
+> PhotoID-20181214.txt
+> PhotoID-20181221.txt
+> PhotoID-20181227.txt
+> PhotoID_201808_01.txt
+> PhotoID_201808_02.txt
+> PhotoID_201808_03.txt
+> PhotoID_201808_04.txt
+> PhotoID_201808_05.txt
+> PhotoID_201808_06.txt
+> PhotoID_201808_07.txt
+> PhotoID_201808_08.txt
+> PhotoID_201808_09.txt
+> PhotoID_201808_10.txt
+> PhotoID_201808_11.txt
+> PhotoID_201808_12.txt
+> PhotoID_201808_13.txt
+> PhotoID_201808_14.txt
+> PhotoID_20180901.txt
+> PhotoID_20180916.txt
+> PhotoID_20180924.txt
+> PhotoID_20180927.txt
+> PhotoID_20181001.txt
+> PhotoID_20181007.txt
+> PhotoID_20181014.txt
+> PhotoID_20181022.txt
+> PhotoID_20181027.txt
+> PhotoID_20181101.txt
+> PhotoID_20181110.txt
+> PhotoID_20181118.txt
+> PhotoID_20181125.txt
+> row count: 69461
+> Hashmap size: 68896
 
-Will scan thru 2 directories:
-..
+Will scan thru 34683 directories:
+...................
+Will scan thru 2439 directories:
+...................
 Completed, check on logmessages.txt for error msg.
-BUILD SUCCESSFUL (total time: 16 seconds)
+BUILD SUCCESSFUL (total time: 6 seconds)
  */
 
-/* logmessages.txt
-> primaryPath: D:\temp2
-> key lgth err: c:\\users\alvinng\verify\test\test1\z01r002\zero1.png < md5chksum.txt
-> StringException: photoid_20181118.zip md5 c8139bf1e2aff9f95c5a238a2a0656c6 < md5chksum.txt
+ /* logmessages.txt
 
->> targetPath: C:\Users\AlvinNg\verify\test\test1
->> matched: C:\Users\AlvinNg\verify\test\test1\C5094E4C507910CFBE9974D1C97CE73D\zero1.png
->> matched: C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Duke.png
->> matched: C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Z01R002.png
-*/
+> primaryPath: D:\temp
+> StringException: �� < PhotoID_20180924.txt
+> StringException: f u l l n a m e < PhotoID_20180924.txt
+> StringException: - - - - - - - - < PhotoID_20180924.txt
+> key lgth err: d : \ t o o l s \ t e m p \ p h o t o i d _ 2 0 2 0 0 9 2 4 r a r . z i p < PhotoID_20180924.txt
+> StringException: photoid_20181118.zip md5 c8139bf1e2aff9f95c5a238a2a0656c6 < PhotoID_20181118.txt
+> StringException: photoid_20181125.zip  md5 - 25abcf53412401d7981b8940a7354aa0 < PhotoID_20181125.txt
 
-/* md5chksum.txt
-C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Z01R002.png
-C:\Users\AlvinNg\verify\test\test1\C5094E4C507910CFBE9974D1C97CE73D\zero1.png
-C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Duke.png
-C:\Users\AlvinNg\verify\test\test1\Z01R002\zero1.png
-C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201808\0a7efcee6ef0761a2e8dea1c17684074\1535777048812682408596.jpg
-photoid_20181118.zip md5 c8139bf1e2aff9f95c5a238a2a0656c6
-*/
+>> targetPath: C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201808
 
-/* tree path for target dir C:\Users\AlvinNg\verify\test\test1
-Folder PATH listing for volume Windows-SSD
-Volume serial number is 6E2A-67EF
-C:.
-├───C5094E4C507910CFBE9974D1C97CE73D
-│       zero1.png
-│
-└───CB718C312BA1B3622ECFDCBF727465F2
-        Duke.png
-        Z01R002.png
+>> targetPath: C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201809
 
-
-C:\Users\AlvinNg\verify\test\test1>
 */
