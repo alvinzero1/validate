@@ -12,7 +12,7 @@ public class Main {
 
     /* s = "C:\\Users\\AlvinNg\\verify\\test\\test1\\CB718C312BA1B3622ECFDCBF727465F2\\Duke.png"; */
     private static final PrintStream OUT = System.out;
-    private static final int HASH_INITIAL_CAP = 3400;
+    private static final int HASH_INITIAL_CAP = 70000;
     public String primaryPath;
     public String targetPath;
     public HashMap<String, ArrayList<String>> hashmap;
@@ -23,7 +23,8 @@ public class Main {
         /* * primaryPath = "D:\\temp";  // */ //
         primaryPath = keyboard.nextLine();
         OUT.print(" Enter target path name: ");
-        /* * targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1"; // */ //
+        /* * targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1"; // */ //        targetPath = keyboard.nextLine();
+        /* * targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808"; // */ //
         targetPath = keyboard.nextLine();
     }
 
@@ -36,7 +37,7 @@ public class Main {
         if (dirfile.isDirectory()) {
             str = dirfile.getName();
             for (var str2 : dirfile.list()) {
-                OUT.println(">> " + str2);
+                OUT.println("> " + str2);
                 var filePath = (primaryPath + "\\" + str2);
 
                 try {
@@ -57,7 +58,9 @@ public class Main {
                         continue toContinue;
                     }
 
-                    subStringPutToHash(textLine);
+                    if (!subStringPutToHash(textLine)) {
+                        System.err.println(" < " + str2);
+                    }
                     count++;
                     hasNextline = fileIn.hasNextLine();
                 }
@@ -67,15 +70,19 @@ public class Main {
             OUT.println("Primary directory NOT correct!");
             System.exit(0);
         }
-        OUT.println(">> row count: " + count);
+        OUT.println("> row count: " + count);
     }
 
     public boolean subStringPutToHash(String s) {
         String filename, mkey, sub;
-
-        sub = s.substring(0, s.lastIndexOf("\\"));
-        mkey = sub.substring(sub.lastIndexOf("\\") + 1); // CB718C312BA1B3622ECFDCBF727465F2
-        filename = s.substring(s.lastIndexOf("\\") + 1); // Duke.png
+        try {
+            sub = s.substring(0, s.lastIndexOf("\\"));
+            mkey = sub.substring(sub.lastIndexOf("\\") + 1); // CB718C312BA1B3622ECFDCBF727465F2
+            filename = s.substring(s.lastIndexOf("\\") + 1); // Duke.png
+        } catch (StringIndexOutOfBoundsException e) {
+            System.err.print("> StringException: " + s);
+            return false;
+        }
 
         // check if right key lgth
         var keylgth = mkey.length();
@@ -101,7 +108,7 @@ public class Main {
             /* * OUT.println(">> Primary >> mkey: " + mkey + " | filename: " + filename); // */
             return true;
         } else {
-            System.err.println("> key lgth err: " + s);
+            System.err.print("> key lgth err: " + s);
             return false;
         }
     }
@@ -120,9 +127,8 @@ public class Main {
 
         for (var str : mainfile.list()) {
             String tagKey = "", tagFilename = "";
-
             // monitoring
-            count = (count <= 0) ? count = lgth / 100 : count--;
+            count = (count <= 0) ? count = lgth / 20 : (count -= 1);
             OUT.print((count <= 0) ? "." : "");
 
             var dirfile = new File(mainfile + "\\" + str);
@@ -183,18 +189,54 @@ public class Main {
         errStream.close();
     }
 }
+
 /*
 run:
- Enter primary path name: D:\temp
+ Enter primary path name: D:\temp2
  Enter target path name: C:\Users\AlvinNg\verify\test\test1
 
 SubString key and name, to hashmap.
->> md5chksum.txt
->> row count: 4
-Hashmap size: 2
+> md5chksum.txt
+> row count: 6
+Hashmap size: 3
 
 Will scan thru 2 directories:
 ..
 Completed, check on logmessages.txt for error msg.
-BUILD SUCCESSFUL (total time: 14 seconds)
+BUILD SUCCESSFUL (total time: 16 seconds)
  */
+
+/* logmessages.txt
+> primaryPath: D:\temp2
+> key lgth err: c:\\users\alvinng\verify\test\test1\z01r002\zero1.png < md5chksum.txt
+> StringException: photoid_20181118.zip md5 c8139bf1e2aff9f95c5a238a2a0656c6 < md5chksum.txt
+
+>> targetPath: C:\Users\AlvinNg\verify\test\test1
+>> matched: C:\Users\AlvinNg\verify\test\test1\C5094E4C507910CFBE9974D1C97CE73D\zero1.png
+>> matched: C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Duke.png
+>> matched: C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Z01R002.png
+*/
+
+/* md5chksum.txt
+C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Z01R002.png
+C:\Users\AlvinNg\verify\test\test1\C5094E4C507910CFBE9974D1C97CE73D\zero1.png
+C:\Users\AlvinNg\verify\test\test1\CB718C312BA1B3622ECFDCBF727465F2\Duke.png
+C:\Users\AlvinNg\verify\test\test1\Z01R002\zero1.png
+C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201808\0a7efcee6ef0761a2e8dea1c17684074\1535777048812682408596.jpg
+photoid_20181118.zip md5 c8139bf1e2aff9f95c5a238a2a0656c6
+*/
+
+/* tree path for target dir C:\Users\AlvinNg\verify\test\test1
+Folder PATH listing for volume Windows-SSD
+Volume serial number is 6E2A-67EF
+C:.
+├───C5094E4C507910CFBE9974D1C97CE73D
+│       zero1.png
+│
+└───CB718C312BA1B3622ECFDCBF727465F2
+        Duke.png
+        Z01R002.png
+
+
+C:\Users\AlvinNg\verify\test\test1>
+*/
