@@ -1,3 +1,5 @@
+/* www.Zero1.Sg 2022Dec */
+package com.zero1.app;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -198,4 +200,27 @@ public class Main {
         return hashmap.toString();
     }
 
+    public static void main(String args[]) {
+        PrintStream errStream = null;
+        var logfile = "logmessages.txt";
+        try {
+            errStream = new PrintStream(
+                    new FileOutputStream(logfile));
+        } catch (FileNotFoundException e) {
+            System.out.println("Error opening file with FileOutputStream.");
+            System.exit(0);
+        }
+        System.setErr(errStream);
+
+        String primaryPath = "D:\\temp2";
+        String targetPath = "C:\\testdata\\test1";
+//        String primaryPath = "D:\\temp";
+//        String targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808";
+        var m = new Main(primaryPath, targetPath);
+        //m.addPrimaryPath("D:\\temp3");
+
+        //m.addTargetPath("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
+        System.out.println("\nCompleted, check " + logfile + " for error msg.");
+        errStream.close();
+    }
 }

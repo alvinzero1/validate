@@ -1,13 +1,11 @@
+/* www.Zero1.Sg 2022Dec */
+package com.zero1.app;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-/**
- *
- * @author AlvinNg
- */
-public class Testmain {
+public class App {
 
     public static void main(String args[]) {
 
@@ -22,14 +20,14 @@ public class Testmain {
         }
         System.setErr(errStream);
 
-        String primaryPath = "D:\\temp2";
-        String targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1";
-//        String primaryPath = "D:\\temp";
-//        String targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808";
+//        String primaryPath = "D:\\temp2";
+//        String targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1";
+//
+        String primaryPath = "D:\\temp";
+        String targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808";
         var m = new Main(primaryPath, targetPath);
-        //m.addPrimaryPath("D:\\temp3");
-        
-        //m.addTargetPath("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
+
+        m.addTargetPath("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
 
         System.out.println("\nCompleted, check " + logfile + " for error msg.");
         errStream.close();
@@ -111,7 +109,6 @@ SubString key and name, to hashmap.
 > PhotoID_20190722.txt
 > row count: 141018
 > Hashmap size: 139949
-
 Scanning thru 34683 directories:
 .................................................
 Scanning thru 2439 directories:
@@ -121,7 +118,6 @@ BUILD SUCCESSFUL (total time: 6 seconds)
  */
 
  /*  logmessages.txt
-
 > primaryPath: D:\temp
 > StringException: �� < PhotoID_20180924.txt
 > StringException: f u l l n a m e < PhotoID_20180924.txt
@@ -169,9 +165,6 @@ BUILD SUCCESSFUL (total time: 6 seconds)
 > StringException: ��m d 5 s u m   b b 0 1 b 5 a 4 8 a 2 6 1 7 4 a e 5 9 5 6 d 9 9 0 7 0 0 1 c c 2 < PhotoID_20190716.txt
 > StringException: ��m d 5 s u m   2 5 7 d 8 0 3 e 2 e d 3 7 1 f 3 6 d b f e a b d 6 8 7 4 f 5 c f < PhotoID_20190719.txt
 > StringException: ��m d 5 s u m   c 4 e 7 b a f b 6 6 9 4 2 4 1 5 0 c c 1 6 a d f 3 5 2 0 6 a e d < PhotoID_20190722.txt
-
 >> targetPath: C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201808
-
 >> targetPath: C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201809
-
  */
