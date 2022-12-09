@@ -4,8 +4,6 @@ package com.zero1.app;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -20,9 +18,13 @@ public class Main {
 
     private static final String DELIMITER = "\\";
     private final HashMap<String, ArrayList<String>> hashmap;
+    private ArrayList<String> matchedArr;
+    public int primaryLineCount = 0;
+    public int targetFileChkCount = 0;
 
     public Main() {
         hashmap = new HashMap<>();
+        matchedArr = new ArrayList<>();
     }
 
     /**
@@ -33,6 +35,7 @@ public class Main {
      */
     public Main(String primaryPath, String targetPath) {
         hashmap = new HashMap<>();
+        matchedArr = new ArrayList<>();
         putFilenameToHashmap(primaryPath);
         targetFilesVerifyByHash(targetPath);
     }
@@ -41,32 +44,36 @@ public class Main {
         return hashmap;
     }
 
+    public ArrayList<String> getMatchedArr() {
+        return matchedArr;
+    }
+
     /**
-     * To get text lines from file, extract subString folder name and file name.
-     * Sample format {@code CB718C312BA1B3622ECFDCBF727465F2\filename.png}.
-     *
+     * To get text lines from file, extract subString folder name and file
+     * name.Sample format {@code CB718C312BA1B3622ECFDCBF727465F2\filename.png}.
      * Put key of 32 chars string, and filename as value to {@code hashmap}.
      *
      * @param primaryPath File of list of paths
+     * @return
      */
-    public void addPrimaryPath(String primaryPath) {
-        putFilenameToHashmap(primaryPath);
+    public boolean addPrimaryPath(String primaryPath) {
+        return putFilenameToHashmap(primaryPath);
     }
 
-    private void putFilenameToHashmap(String primaryPath) {
+    private boolean putFilenameToHashmap(String primaryPath) {
         String textLine;
-        int priCount = 0;
         Scanner fileIn;
-        System.out.println("");
-        System.out.println("\nSubString key and name, to hashmap.");
-        System.err.println("\n> primaryPath: " + primaryPath);
+
         var dirfile = new File(primaryPath + DELIMITER);
         if (dirfile.isDirectory()) {
             for (var str2 : dirfile.list()) {
-                System.out.println("> " + str2);
                 var filePath = (primaryPath + DELIMITER + str2);
 
                 try {
+                    if ((new File(primaryPath + DELIMITER + str2)).isDirectory()) {
+                        continue;
+                    }
+
                     fileIn = new Scanner(
                             new FileInputStream(filePath));
 
@@ -81,22 +88,21 @@ public class Main {
                         if (!subStringPutToHash(textLine)) {
                             System.err.println(" < " + str2);
                         }
-                        priCount++;
+                        primaryLineCount++;
                         hasNextline = fileIn.hasNextLine();
                     }
                     fileIn.close();
 
                 } catch (FileNotFoundException e) {
                     System.out.println("File not found.");
-                    System.exit(0);
+                    return false;
                 }
             }
+            return true;
         } else {
             System.out.println("Primary directory NOT correct!");
-            System.exit(0);
+            return false;
         }
-        System.out.println("> row count: " + priCount);
-        System.out.println("> Hashmap size: " + hashmap.size());
     }
 
     private boolean subStringPutToHash(String s) {
@@ -151,14 +157,10 @@ public class Main {
     }
 
     private boolean targetFilesVerifyByHash(String targetPath) {
-        System.err.println("\n>> targetPath: " + targetPath);
+
         var mainfile = new File(targetPath);
 
         if (mainfile.isDirectory()) {
-            int monitor = 0;
-            var dirLgth = mainfile.list().length;
-            System.out.println("\nScanning thru " + dirLgth + " directories:");
-
             for (var str : mainfile.list()) {
                 var dirfile = new File(mainfile + DELIMITER + str);
                 if (dirfile.isDirectory()) {
@@ -173,19 +175,19 @@ public class Main {
                             ArrayList<String> arr = hashmap.get(tagKey);
                             for (String priFileName : arr) {
                                 if (priFileName.equalsIgnoreCase(tagFilename)) {
-                                    System.err.println(">> matched: " + targetPath + DELIMITER + str
-                                            + DELIMITER + tagFilename);
+                                    matchedArr.add((targetPath + DELIMITER + str + DELIMITER + tagFilename));
                                 }
                             }
                         }
+                        targetFileChkCount++;
                     }
                 } else {
                     System.out.println(">> " + dirfile.getName());
                 }
 
-                // monitoring, done at 50 'dots'
+                /* // monitoring, done at 50 'dots' KIV
                 monitor = (monitor <= 0) ? dirLgth / 50 : monitor - 1;
-                System.out.print((monitor <= 0) ? "." : "");
+                System.out.print((monitor <= 0) ? "." : ""); */
             }
             return true;
         } else {
@@ -200,27 +202,4 @@ public class Main {
         return hashmap.toString();
     }
 
-    public static void main(String args[]) {
-        PrintStream errStream = null;
-        var logfile = "logmessages.txt";
-        try {
-            errStream = new PrintStream(
-                    new FileOutputStream(logfile));
-        } catch (FileNotFoundException e) {
-            System.out.println("Error opening file with FileOutputStream.");
-            System.exit(0);
-        }
-        System.setErr(errStream);
-
-        String primaryPath = "D:\\temp2";
-        String targetPath = "C:\\testdata\\test1";
-//        String primaryPath = "D:\\temp";
-//        String targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808";
-        var m = new Main(primaryPath, targetPath);
-        //m.addPrimaryPath("D:\\temp3");
-
-        //m.addTargetPath("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
-        System.out.println("\nCompleted, check " + logfile + " for error msg.");
-        errStream.close();
-    }
 }
