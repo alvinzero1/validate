@@ -24,6 +24,22 @@ public class Main {
     }
 
     /**
+     * Initiate application.
+     *
+     * @param primaryPath
+     * @param targetPath
+     */
+    public Main(String primaryPath, String targetPath) {
+        hashmap = new HashMap<>();
+        putFilenameToHashmap(primaryPath);
+        targetFilesVerifyByHash(targetPath);
+    }
+
+    public HashMap<String, ArrayList<String>> getHashmap() {
+        return hashmap;
+    }
+
+    /**
      * To get text lines from file, extract subString folder name and file name.
      * Sample format {@code CB718C312BA1B3622ECFDCBF727465F2\filename.png}.
      *
@@ -31,7 +47,11 @@ public class Main {
      *
      * @param primaryPath File of list of paths
      */
-    public void putFilenameToHashmap(String primaryPath) {
+    public void addPrimaryPath(String primaryPath) {
+        putFilenameToHashmap(primaryPath);
+    }
+
+    private void putFilenameToHashmap(String primaryPath) {
         String textLine;
         int priCount = 0;
         Scanner fileIn;
@@ -117,13 +137,18 @@ public class Main {
     }
 
     /**
-     * To get the full path name of directory individual files. And compare with
-     * {@code hashmap} for key as folder, value as filename.
+     * Add additional path. To get the full path name of directory individual
+     * files. And compare with {@code hashmap} for key as folder, value as
+     * filename.
      *
-     * @param targetPath Path from local drive, or local OneDrive.
+     * @param targetPath Path from local drive, or local sharepoint.
      * @return True for process done, or false for wrong directory
      */
-    public boolean targetFilesVerifyByHash(String targetPath) {
+    public boolean addTargetPath(String targetPath) {
+        return targetFilesVerifyByHash(targetPath);
+    }
+
+    private boolean targetFilesVerifyByHash(String targetPath) {
         System.err.println("\n>> targetPath: " + targetPath);
         var mainfile = new File(targetPath);
 

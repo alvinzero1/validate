@@ -10,7 +10,6 @@ import java.io.PrintStream;
 public class Testmain {
 
     public static void main(String args[]) {
-        var m = new Main();
 
         PrintStream errStream = null;
         var logfile = "logmessages.txt";
@@ -23,12 +22,14 @@ public class Testmain {
         }
         System.setErr(errStream);
 
-//        m.putFilenameToHashmap("D:\\temp2");
-//        m.targetFilesVerifyByHash("C:\\Users\\AlvinNg\\verify\\test\\test1");
-//
-        m.putFilenameToHashmap("D:\\temp");
-        m.targetFilesVerifyByHash("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808");
-        m.targetFilesVerifyByHash("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
+        String primaryPath = "D:\\temp2";
+        String targetPath = "C:\\Users\\AlvinNg\\verify\\test\\test1";
+//        String primaryPath = "D:\\temp";
+//        String targetPath = "C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808";
+        var m = new Main(primaryPath, targetPath);
+        //m.addPrimaryPath("D:\\temp3");
+        
+        //m.addTargetPath("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
 
         System.out.println("\nCompleted, check " + logfile + " for error msg.");
         errStream.close();
@@ -117,9 +118,9 @@ Scanning thru 2439 directories:
 .................................................
 Completed, check logmessages.txt for error msg.
 BUILD SUCCESSFUL (total time: 6 seconds)
-*/
+ */
 
-/*  logmessages.txt
+ /*  logmessages.txt
 
 > primaryPath: D:\temp
 > StringException: �� < PhotoID_20180924.txt
@@ -173,4 +174,4 @@ BUILD SUCCESSFUL (total time: 6 seconds)
 
 >> targetPath: C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201809
 
-*/
+ */
