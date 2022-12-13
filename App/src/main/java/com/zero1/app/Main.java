@@ -25,6 +25,9 @@ public class Main {
     private int primaryLineCount = 0;
     private int targetFileChkCount = 0;
     private int mode = 0;
+    private ArrayList<String> matchedFilesOnly;
+    public int matchedNameCount = 0;
+    public String info = "";
 
     /**
      * Initiate application.
@@ -41,18 +44,20 @@ public class Main {
     }
 
     /**
-     * Initiate application with mode = 1, i.e. filename as hash key.
+     * Initiate application with
+     *
+     * @see setMode()
      *
      * @param primaryPath
      * @param targetPath
-     * @param hashkeyType mode = 1: hash key will be filename, hash value for
-     * folder name
+     * @param modeType see mode
      */
-    public Main(String primaryPath, String targetPath, int hashkeyType) {
-        mode = hashkeyType;
+    public Main(String primaryPath, String targetPath, int modeType) {
+        mode = modeType;
         hashmap = new HashMap<>();
         matchedArr = new ArrayList<>();
         errPrint = new ArrayList<>();
+        matchedFilesOnly = new ArrayList<>();
         addPrimaryPath(primaryPath);
         addTargetPath(targetPath);
     }
@@ -61,27 +66,70 @@ public class Main {
         return mode;
     }
 
-    public HashMap<String, ArrayList<String>> getHashmap() {
-        return hashmap;
+    /**
+     * <li> mode = 1: filename as hashmap key. to compare folername togather
+     * with filename to matchced.
+     * <li> mode = 2: filename as hashmap key. However, only to compare
+     * filename.
+     *
+     * @param mode
+     */
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
+    /**
+     * @return hashmap size
+     */
+    public int getHashmapSize() {
+        return hashmap.size();
+    }
+
+    /**
+     * @return list of matching folder together with file of primaryPath and
+     * targetPath.
+     */
     public ArrayList<String> getMatchedArr() {
         return matchedArr;
     }
 
+    /**
+     * Use in mode 2 only.
+     *
+     * @return Array of list of matching files of primaryPath and targetPath.
+     */
+    public ArrayList<String> getMatchedFilesOnly() {
+        return matchedFilesOnly;
+    }
+
+    /**
+     *
+     * @return list of error msg
+     */
     public ArrayList<String> getErrPrint() {
         return errPrint;
     }
 
+    /**
+     * Add String, and System.out.println
+     *
+     * @param s String
+     */
     public void setErrPrint(String s) {
         System.out.println(s);
         errPrint.add(s);
     }
 
+    /**
+     * @return no. of lines from path
+     */
     public int getPrimaryLineCount() {
         return primaryLineCount;
     }
 
+    /**
+     * @return no. of lines from path
+     */
     public int getTargetFileChkCount() {
         return targetFileChkCount;
     }
@@ -95,7 +143,7 @@ public class Main {
      * @return
      */
     public boolean addPrimaryPath(String primaryPath) {
-        setErrPrint("> primaryPath: " + primaryPath);
+        info += "\n" + "> primaryPath: " + primaryPath;
         return putFilenameToHashmap(primaryPath);
     }
 
@@ -169,19 +217,28 @@ public class Main {
         }
 
         if (keylgth == 32) {
-            // if hashmap NOT contain key
-            if (mode != 1) {
-                // folder(mKey) as hash key
-                if (!hashmap.containsKey(mkey)) {
-                    hashmap.put(mkey, new ArrayList<>());
+            switch (mode) {
+                case 2 -> {
+                    //  System.out.println("> filename as hashkey");
+                    if (!hashmap.containsKey(filename)) {
+                        hashmap.put(filename, new ArrayList<>());
+                    }
+                    hashmap.get(filename).add(s);
                 }
-                hashmap.get(mkey).add(filename.toLowerCase());
-            } else {
-                //  System.out.println("> filename as hashkey");
-                if (!hashmap.containsKey(filename)) {
-                    hashmap.put(filename, new ArrayList<>());
+                case 1 -> {
+                    //  System.out.println("> filename as hashkey");
+                    if (!hashmap.containsKey(filename)) {
+                        hashmap.put(filename, new ArrayList<>());
+                    }
+                    hashmap.get(filename).add(mkey.toLowerCase());
                 }
-                hashmap.get(filename).add(mkey.toLowerCase());
+                default -> {
+                    // folder(mKey) as hash key
+                    if (!hashmap.containsKey(mkey)) {
+                        hashmap.put(mkey, new ArrayList<>());
+                    }
+                    hashmap.get(mkey).add(filename.toLowerCase());
+                }
             }
 
             return true;
@@ -200,7 +257,7 @@ public class Main {
      * @return True for process done, or false for wrong directory
      */
     public boolean addTargetPath(String targetPath) {
-        setErrPrint(">> targetPath: " + targetPath);
+        info += "\n" + ">> targetPath: " + targetPath;
         return targetFilesVerifyByHash(targetPath);
     }
 
@@ -216,27 +273,36 @@ public class Main {
                     for (var str2 : dirfile.list()) {
                         var subfile = new File(dirfile + DELIMITER + str2);
                         var tagFilename = subfile.getName().toLowerCase();
-
-                        // if there IS match from hashmap, will log error message.
-                        if (mode != 1) {
-                            // folder(mKey) as hash key,
-                            if (hashmap.containsKey(tagKey)) {
-                                ArrayList<String> arr = hashmap.get(tagKey);
-                                arr.forEach(priFileName -> {
-                                    if (priFileName.equalsIgnoreCase(tagFilename)) {
-                                        matchedArr.add((targetPath + DELIMITER + str + DELIMITER + tagFilename));
-                                    }
-                                });
+                        switch (mode) {
+                            case 1 -> {
+                                // System.out.println(">>  filename as hashkey");
+                                if (hashmap.containsKey(tagFilename)) {
+                                    ArrayList<String> arr = hashmap.get(tagFilename);
+                                    arr.forEach(priFileName -> {
+                                        if (priFileName.equalsIgnoreCase(tagKey)) {
+                                            matchedArr.add((targetPath + DELIMITER + str + DELIMITER + tagFilename));
+                                        }
+                                    });
+                                }
                             }
-                        } else {
-                            // System.out.println(">>  filename as hashkey");
-                            if (hashmap.containsKey(tagFilename)) {
-                                ArrayList<String> arr = hashmap.get(tagFilename);
-                                arr.forEach(priFileName -> {
-                                    if (priFileName.equalsIgnoreCase(tagKey)) {
-                                        matchedArr.add((targetPath + DELIMITER + str + DELIMITER + tagFilename));
+                            case 2 -> {
+                                if (hashmap.containsKey(tagFilename)) {
+                                    matchedNameCount++;
+                                    if (tagFilename.length() > 20) { //ignore  image.jpg,...,nric_front.jpg,nric front small.jpg
+                                        matchedFilesOnly.add(targetPath + DELIMITER + str + DELIMITER + tagFilename + " <> " + hashmap.get(tagFilename));
                                     }
-                                });
+                                }
+                            }
+                            default -> {
+                                // folder(mKey) as hash key,
+                                if (hashmap.containsKey(tagKey)) {
+                                    ArrayList<String> arr = hashmap.get(tagKey);
+                                    arr.forEach(priFileName -> {
+                                        if (priFileName.equalsIgnoreCase(tagFilename)) {
+                                            matchedArr.add((targetPath + DELIMITER + str + DELIMITER + tagFilename));
+                                        }
+                                    });
+                                }
                             }
                         }
 
@@ -257,6 +323,11 @@ public class Main {
         }
     }
 
+    /**
+     * Print to file array of matchArr, matchedFileOnly, errPrint
+     *
+     * @param filename new filename to copy text to
+     */
     public void printErrlogNMatchedToFile(String filename) {
         PrintWriter outputStream = null;
         try {
@@ -267,12 +338,26 @@ public class Main {
             System.exit(0);
         }
 
-        for (String e : getErrPrint()) {
-            outputStream.println(e);
-        }
-
+        outputStream.println("\nMatched 'folder file':");
         for (String s : getMatchedArr()) {
             outputStream.println(s);
+        }
+
+        if (getMode() == 2) {
+            outputStream.println("\nPortal filename   <> against the txt files:\n"
+                    + info + "\n"
+                    + "only compare filename.length > 20, ie. ignore  image.jpg, ..."
+                    + "\n");
+            for (String s : matchedFilesOnly) {
+                outputStream.println(s);
+            }
+            outputStream.println(">>> matchedNameCount: " + matchedNameCount);
+        } //else 
+        {
+            outputStream.println("\nError Messages:");
+            for (String e : getErrPrint()) {
+                outputStream.println(e);
+            }
         }
         outputStream.close();
     }
