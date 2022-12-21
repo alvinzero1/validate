@@ -1,3 +1,4 @@
+
 package com.zero1.app;
 
 import org.junit.jupiter.api.Test;
@@ -8,19 +9,16 @@ public class MainTest {
     String primaryPath = "..\\..\\verify\\app\\testSample";
     String targetPath = "..\\..\\verify\\app\\testSample";
 
-    public MainTest() {
-    }
-
     @Test
-    public void testMainHashSize() {
+    public void testMain() {
         var m = new Main(primaryPath, targetPath);
         assertEquals(5, m.getHashmapSize());
         assertEquals(1, m.getMatchedArr().size());
         assertEquals(9, m.getPrimaryLineCount());
         assertEquals(3, m.getTargetFileChkCount());
 
-        m.addPrimarypathFilenameToHashmap(primaryPath);
-        m.targetFilesVerifyByHash(targetPath);
+        assertTrue(m.addPrimarypathFilenameToHashmap(primaryPath));
+        assertTrue(m.targetFilesVerifyByHash(targetPath));
         assertEquals(5, m.getHashmapSize());
         assertEquals(3, m.getMatchedArr().size());
         assertEquals(18, m.getPrimaryLineCount());
@@ -28,14 +26,14 @@ public class MainTest {
     }
 
     @Test
-    public void testMainHashSizeMode1() {
+    public void testMainMode1() {
         var m = new Main(primaryPath, targetPath, 1);
         assertEquals(1, m.getMode());
         assertEquals(7, m.getHashmapSize());
     }
 
     @Test
-    public void testMode2() {
+    public void testMainMode2() {
         var m = new Main(primaryPath, targetPath, 2);
         assertEquals(2, m.getMode());
         assertEquals(7, m.getHashmapSize());
@@ -59,4 +57,5 @@ public class MainTest {
         String s = Main.utf16ToUtf8("t\u0000e\u0000s\u0000t\u0000");
         assertEquals("test", s);
     }
+
 }

@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -80,7 +81,7 @@ public class Main {
      * @return list of matching folder together with file of primaryPath and
      * targetPath.
      */
-    public ArrayList<String> getMatchedArr() {
+    public List<String> getMatchedArr() {
         return matchedArr;
     }
 
@@ -89,7 +90,7 @@ public class Main {
      *
      * @return Array of list of matching files of primaryPath and targetPath.
      */
-    public ArrayList<String> getMatchedFilesOnly() {
+    public List<String> getMatchedFilesOnly() {
         return matchedFilesOnly;
     }
 
@@ -97,7 +98,7 @@ public class Main {
      *
      * @return list of error msg
      */
-    public ArrayList<String> getErrPrint() {
+    public List<String> getErrPrint() {
         return errPrint;
     }
 
@@ -134,8 +135,7 @@ public class Main {
      * @return
      */
     public boolean addPrimarypathFilenameToHashmap(String primaryPath) {
-        info += """
-                > primaryPath: """ + primaryPath;
+        info += "\n> primaryPath: " + primaryPath;
         String textLine;
         Scanner fileIn;
 
@@ -201,15 +201,16 @@ public class Main {
 
     private boolean subStringPutToHash(String s) {
 
-        String filename, mkey, sub;
-        try {
-            sub = s.substring(0, s.lastIndexOf(DELIMITER));
-            mkey = sub.substring(sub.lastIndexOf(DELIMITER) + 1); //eg. CB718C312BA1B3622ECFDCBF727465F2
-            filename = s.substring(s.lastIndexOf(DELIMITER) + 1);
-        } catch (StringIndexOutOfBoundsException e) {
-            errPrint.add("> StringException: " + s);
+        String filename, mkey;
+
+        String[] fields = s.split(DELIMITER + DELIMITER); // eg fields.length: 4
+        if (fields.length < 3) {
+            errPrint.add("> splited sentences less than 3.");
             return false;
         }
+        mkey = fields[fields.length - 2].trim().toLowerCase();
+        // eg. CB718C312BA1B3622ECFDCBF727465F2
+        filename = fields[fields.length - 1].trim().toLowerCase();
 
         // check if right key lgth
         if (mkey.length() == 32) {
@@ -236,6 +237,7 @@ public class Main {
                     hashmap.get(mkey).add(filename);
                 }
             }
+
             return true;
         } else {
             errPrint.add("> key lgth err: " + s);
@@ -252,8 +254,7 @@ public class Main {
      * @return True for process done, or false for wrong directory
      */
     public boolean targetFilesVerifyByHash(String targetPath) {
-        info += """
-                >> targetPath: """ + targetPath;
+        info += "\n>> targetPath: " + targetPath;
         var mainfile = new File(targetPath);
 
         if (mainfile.isDirectory()) {
@@ -339,11 +340,10 @@ public class Main {
                     + "\n");
             matchedFilesOnly.forEach(outputStream::println);
             outputStream.println(">>> matchedNameCount: " + matchedNameCount);
-        } //else 
-        {
-            outputStream.println("\nError Messages:");
-            getErrPrint().forEach(outputStream::println);
-        }
+        } //else {
+        outputStream.println("\nError Messages:");
+        getErrPrint().forEach(outputStream::println);
+        //}
         outputStream.close();
     }
 
