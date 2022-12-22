@@ -1,6 +1,7 @@
 /* www.Zero1.Sg 2022Dec
 https://github.com/alvinzero1/verify/tree/api */
-package com.zero1.app;
+
+package com.zero1.chkfileid;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,12 +14,11 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * To check if there is match from GoogleDrive and ToBeDelete_Portal. If match
- * found LOG pathname as error message.
+ * To check and compare from log files and directories of folder with files.
  *
  * Folder for files should be 32 chars String.
  */
-public class Main {
+public class ChkFileId {
 
     private static final String DELIMITER = "\\";
     private final HashMap<String, ArrayList<String>> hashmap;
@@ -33,7 +33,7 @@ public class Main {
      * @param primaryPath
      * @param targetPath
      */
-    public Main(String primaryPath, String targetPath) {
+    public ChkFileId(String primaryPath, String targetPath) {
         hashmap = new HashMap<>();
         matchedArr = new ArrayList<>();
         errPrint = new ArrayList<>();
@@ -50,7 +50,7 @@ public class Main {
      * @param targetPath
      * @param modeType see mode
      */
-    public Main(String primaryPath, String targetPath, int modeType) {
+    public ChkFileId(String primaryPath, String targetPath, int modeType) {
         mode = modeType;
         hashmap = new HashMap<>();
         matchedArr = new ArrayList<>();
@@ -235,9 +235,12 @@ public class Main {
                         hashmap.put(mkey, new ArrayList<>());
                     }
                     hashmap.get(mkey).add(filename);
+
+                    /* */ assert (mode == 0) : "mode error"; // test only  */
                 }
             }
 
+            /* * System.out.println(">> Primary >> mkey: " + mkey + " | filename: " + filename); // */
             return true;
         } else {
             errPrint.add("> key lgth err: " + s);
@@ -265,6 +268,7 @@ public class Main {
                     for (var str2 : dirfile.list()) {
                         var subfile = new File(dirfile + DELIMITER + str2);
                         var tagFilename = subfile.getName();
+                        /* * System.out.println(">> target key: " + tagKey + " | name: " + tagFilename); // */
                         switch (mode) {
                             case 1 -> {
                                 // System.out.println(">>  filename as hashkey");

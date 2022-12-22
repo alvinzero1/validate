@@ -1,5 +1,5 @@
 /* www.Zero1.Sg 2022Dec */
-package com.zero1.app;
+package com.zero1.chkfileid;
 
 public class App {
 
@@ -11,12 +11,12 @@ public class App {
 
 //        String primaryPath = ("D:\\temp");
 //        String targetPath = ("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808");
-//        var m = new Main(primaryPath, targetPath);
+//        var m = new ChkFileId(primaryPath, targetPath);
 //        m.addPrimarypathFilenameToHashmap("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
 //
         String primaryPath = "D:\\temp2";
         String targetPath = "C:\\testdata\\test1";
-        var m = new Main(primaryPath, targetPath);
+        var m = new ChkFileId(primaryPath, targetPath);
 
         System.out.println(m.info + "\n"
                 + "> row count: " + m.getPrimaryLineCount() + "\n"
@@ -27,7 +27,7 @@ public class App {
             m.setErrPrint(">> matched found: " + m.getMatchedArr().size());
         }
 
-        System.out.println(">> Error size: " +  m.getErrPrint().size());
+        System.out.println(">> Error size: " + m.getErrPrint().size());
 //        m.getErrPrint().forEach(System.out::println);
 //        System.out.println("\nMatched 'folder file':");
 //        m.getMatchedArr().forEach(System.out::println);
