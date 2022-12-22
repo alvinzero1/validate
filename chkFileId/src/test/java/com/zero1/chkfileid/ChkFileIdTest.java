@@ -16,8 +16,10 @@ public class ChkFileIdTest {
         assertEquals(9, m.getPrimaryLineCount());
         assertEquals(3, m.getTargetFileChkCount());
 
-        assertTrue(m.addPrimarypathFilenameToHashmap(primaryPath));
-        assertTrue(m.targetFilesVerifyByHash(targetPath));
+        m.setPrimaryPath(primaryPath);
+        m.setTargetPath(targetPath);
+        assertTrue(m.addPrimarypathFilenameToHashmap());
+        assertTrue(m.targetFilesVerifyByHash());
         assertEquals(5, m.getHashmapSize());
         assertEquals(3, m.getMatchedArr().size());
         assertEquals(18, m.getPrimaryLineCount());
