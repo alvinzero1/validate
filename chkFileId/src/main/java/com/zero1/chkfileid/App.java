@@ -9,16 +9,11 @@ public class App {
 
         System.out.println("SubString key and name, to hashmap.");
 
-//        String primaryPath = ("D:\\temp");
-//        String targetPath = ("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201808");
-//        var m = new ChkFileId(primaryPath, targetPath);
-//        m.addPrimarypathFilenameToHashmap("C:\\Users\\AlvinNg\\Zero1 Pte Ltd\\Portal - ToBeDeleted\\201809");
-//
         String primaryPath = "D:\\temp2";
         String targetPath = "C:\\testdata\\test1";
         var m = new ChkFileId(primaryPath, targetPath);
 
-        System.out.println(m.info + "\n"
+        System.out.println(m.getInfo() + "\n"
                 + "> row count: " + m.getPrimaryLineCount() + "\n"
                 + "> Hashmap size: " + m.getHashmapSize() + "\n"
                 + ">> files count: " + m.getTargetFileChkCount());
@@ -39,7 +34,7 @@ public class App {
                                only compare filename.length > 20, ie. ignore  image.jpg, ...
                                """);
             m.getMatchedFilesOnly().forEach(s -> System.out.println(s));
-            System.out.println(">>> matchedNameCount: " + m.matchedNameCount);
+            System.out.println(">>> matchedNameCount: " + m.getMatchedNameCount());
         }
 
         System.out.println("Completed. Check " + logfile);
@@ -56,4 +51,25 @@ SubString key and name, to hashmap.
 >> matched found: 2
 >> Error size: 5
 Completed. Check logmessages.txt
+ */
+ /*
+C:\testdata\test1>tree /f
+Folder PATH listing for volume Windows-SSD
+Volume serial number is 6E2A-67EF
+C:.
+├───C5094E4C507910CFBE9974D1C97CE73D
+│       zero1.png
+│
+├───CB718C312BA1B3622ECFDCBF727465F2
+│       Duke.png
+│       Z01R002.png
+│       zero1QR.png
+│
+└───fe5e99114138db8a57c888ec270631b6
+
+C:\testdata\test1>D:
+D:\temp2>more md5chksum.txt
+C:\Users\AlvinNg\Zero1 Pte Ltd\Portal - ToBeDeleted\201809\fe5e99114138db8a57c888ec270631b6\20180512_214614.jpg7118.jpg
+
+D:\temp2>
  */

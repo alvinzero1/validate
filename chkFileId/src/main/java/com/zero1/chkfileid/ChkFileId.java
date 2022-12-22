@@ -1,6 +1,5 @@
 /* www.Zero1.Sg 2022Dec
 https://github.com/alvinzero1/verify/tree/api */
-
 package com.zero1.chkfileid;
 
 import java.io.File;
@@ -24,8 +23,8 @@ public class ChkFileId {
     private final HashMap<String, ArrayList<String>> hashmap;
     private ArrayList<String> matchedArr, errPrint, matchedFilesOnly;
     private int primaryLineCount = 0, targetFileChkCount = 0, mode = 0;
-    public int matchedNameCount = 0;
-    public String info = "";
+    private int matchedNameCount = 0;
+    private String info = "";
 
     /**
      * Initiate application.
@@ -61,18 +60,17 @@ public class ChkFileId {
     }
 
     /**
-     * <li> mode = 1: filename as hashmap key. to compare folername togather
-     * with filename to matchced.
+     * <li> mode = 1: filename as hashmap key.to compare folername togather with
+     * filename to matchced.
      * <li> mode = 2: filename as hashmap key. However, only to compare
      * filename.
+     *
+     * @return mode
      */
     public int getMode() {
         return mode;
     }
 
-    /**
-     * @return hashmap size
-     */
     public int getHashmapSize() {
         return hashmap.size();
     }
@@ -94,36 +92,28 @@ public class ChkFileId {
         return matchedFilesOnly;
     }
 
-    /**
-     *
-     * @return list of error msg
-     */
     public List<String> getErrPrint() {
         return errPrint;
     }
 
-    /**
-     * Add String, and System.out.println
-     *
-     * @param s String
-     */
     public void setErrPrint(String s) {
-        System.out.println(s);
         errPrint.add(s);
     }
 
-    /**
-     * @return no. of lines from path
-     */
     public int getPrimaryLineCount() {
         return primaryLineCount;
     }
 
-    /**
-     * @return no. of lines from path
-     */
     public int getTargetFileChkCount() {
         return targetFileChkCount;
+    }
+
+    public int getMatchedNameCount() {
+        return matchedNameCount;
+    }
+
+    public String getInfo() {
+        return info;
     }
 
     /**
@@ -134,7 +124,7 @@ public class ChkFileId {
      * @param primaryPath File of list of paths
      * @return
      */
-    public boolean addPrimarypathFilenameToHashmap(String primaryPath) {
+    public final boolean addPrimarypathFilenameToHashmap(String primaryPath) {
         info += "\n> primaryPath: " + primaryPath;
         String textLine;
         Scanner fileIn;
@@ -184,16 +174,15 @@ public class ChkFileId {
     }
 
     /**
-     * if first or second chars in s contain null \u0000, remove all
+     * if first or second chars in s contain null \u0000, remove all.
+     *
+     * String s in `utf16`, converting to `utf8`, remove the access char 0
      *
      * @param s
      * @return s
      */
     public static String utf16ToUtf8(String s) {
         if ((s.codePointAt(1) == 0) || (s.codePointAt(3) == 0)) {
-
-            // String s in utf16, converting to utf8
-            // remove the access char 0
             return s.replace("\u0000", "");
         }
         return s;
@@ -216,31 +205,28 @@ public class ChkFileId {
         if (mkey.length() == 32) {
             switch (mode) {
                 case 2 -> {
-                    //  System.out.println("> filename as hashkey");
+                    //  filename as hashkey, full String as hashvalue
                     if (!hashmap.containsKey(filename)) {
                         hashmap.put(filename, new ArrayList<>());
                     }
                     hashmap.get(filename).add(s);
                 }
                 case 1 -> {
-                    //  System.out.println("> filename as hashkey");
+                    //  filename as hashkey, folder as hashvalue
                     if (!hashmap.containsKey(filename)) {
                         hashmap.put(filename, new ArrayList<>());
                     }
                     hashmap.get(filename).add(mkey);
                 }
                 default -> {
-                    // folder(mKey) as hash key
+                    // folder(mKey) as hash key, filename as hashvalue
                     if (!hashmap.containsKey(mkey)) {
                         hashmap.put(mkey, new ArrayList<>());
                     }
                     hashmap.get(mkey).add(filename);
-
-                    /* */ assert (mode == 0) : "mode error"; // test only  */
                 }
             }
 
-            /* * System.out.println(">> Primary >> mkey: " + mkey + " | filename: " + filename); // */
             return true;
         } else {
             errPrint.add("> key lgth err: " + s);
@@ -256,7 +242,7 @@ public class ChkFileId {
      * @param targetPath Path from local drive, or local sharepoint.
      * @return True for process done, or false for wrong directory
      */
-    public boolean targetFilesVerifyByHash(String targetPath) {
+    public final boolean targetFilesVerifyByHash(String targetPath) {
         info += "\n>> targetPath: " + targetPath;
         var mainfile = new File(targetPath);
 
@@ -268,7 +254,7 @@ public class ChkFileId {
                     for (var str2 : dirfile.list()) {
                         var subfile = new File(dirfile + DELIMITER + str2);
                         var tagFilename = subfile.getName();
-                        /* * System.out.println(">> target key: " + tagKey + " | name: " + tagFilename); // */
+
                         switch (mode) {
                             case 1 -> {
                                 // System.out.println(">>  filename as hashkey");
