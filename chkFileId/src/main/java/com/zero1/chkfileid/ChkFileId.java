@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,7 @@ public class ChkFileId {
                     boolean hasNextline = fileIn.hasNextLine();
                     while (hasNextline) {
                         textLine = fileIn.nextLine().trim().toLowerCase();
-                        textLine = utf16ToUtf8(textLine);
+                        textLine = utf8ToUtf16(textLine);
 
                         if (textLine.length() <= 1) {
                             hasNextline = fileIn.hasNextLine();
@@ -178,18 +179,19 @@ public class ChkFileId {
     }
 
     /**
-     * if first or second chars in s contain null \u0000, remove all.
-     *
-     * String s in `utf16`, converting to `utf8`, remove the access char 0
+     * String s in `utf8, convert to `utf16`
      *
      * @param s
      * @return s
      */
-    public static String utf16ToUtf8(String s) {
-        if ((s.codePointAt(1) == 0) || (s.codePointAt(3) == 0)) {
-            return s.replace("\u0000", "");
-        }
-        return s;
+    public static String utf8ToUtf16(String s) {
+
+        //return s.replace("\u0000", ""); // alternative
+        //
+        s += "\u0000"; // add null for the last char 
+        byte arr[];
+        arr = s.getBytes(StandardCharsets.UTF_8);
+        return new String(arr, StandardCharsets.UTF_16LE);
     }
 
     private boolean subStringPutToHash(String s) {

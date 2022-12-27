@@ -54,8 +54,8 @@ public class ChkFileIdTest {
     }
 
     @Test
-    public void testUtf16ToUtf8() {
-        String s = ChkFileId.utf16ToUtf8("t\u0000e\u0000s\u0000t\u0000");
+    public void testUtf8ToUtf16() {
+        String s = ChkFileId.utf8ToUtf16("t\u0000e\u0000s\u0000t");
         assertEquals("test", s);
     }
 
