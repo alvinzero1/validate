@@ -28,3 +28,5 @@ hs_err_pid*
 /app/target/
 *.txt
 /app/nbproject/
+/chkFileId/nbproject/
+/chkFileId/target/
