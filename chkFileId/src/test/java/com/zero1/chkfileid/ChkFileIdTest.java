@@ -16,6 +16,7 @@ public class ChkFileIdTest {
         assertEquals(9, m.getPrimaryLineCount());
         assertEquals(3, m.getTargetFileChkCount());
 
+        // add additional paths
         m.setPrimaryPath(primaryPath);
         m.setTargetPath(targetPath);
         assertTrue(m.addPrimarypathFilenameToHashmap());
@@ -55,8 +56,12 @@ public class ChkFileIdTest {
 
     @Test
     public void testUtf8ToUtf16() {
+        
         String s = ChkFileId.utf8ToUtf16("t\u0000e\u0000s\u0000t");
         assertEquals("test", s);
+
+        s = ChkFileId.utf8ToUtf16("teS@t_ $'!c:\\a-bc_cd.png");
+        assertEquals("teSt_ c:\\a-bc_cd.png", s);
     }
 
 }

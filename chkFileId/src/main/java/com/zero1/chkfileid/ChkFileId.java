@@ -20,7 +20,7 @@ import java.util.Scanner;
  */
 public class ChkFileId {
 
-    private static final String DELIMITER = "\\";
+    private static final String DELIMITER = "\\"; // Window system
     private final HashMap<String, ArrayList<String>> hashmap;
     private ArrayList<String> matchedArr, errPrint, matchedFilesOnly;
     private int primaryLineCount = 0, targetFileChkCount = 0, mode = 0, matchedNameCount = 0;
@@ -179,19 +179,30 @@ public class ChkFileId {
     }
 
     /**
-     * String s in `utf8, convert to `utf16`
+     * String s encoded to `utf16`. and
+     *
+     * Remove chars that not Cmd text.
      *
      * @param s
      * @return s
      */
     public static String utf8ToUtf16(String s) {
 
-        //return s.replace("\u0000", ""); // alternative
-        //
-        s += "\u0000"; // add null for the last char 
-        byte arr[];
-        arr = s.getBytes(StandardCharsets.UTF_8);
-        return new String(arr, StandardCharsets.UTF_16LE);
+        // uses surrogate pairs, however
+        // if there are any unpaired surrogate, will be assume utf8 in String.
+        if (s.contains("\u0000")) { // check for extra null in utf8
+            s += "\u0000"; // add null at the last char 
+
+            // to replaces malformed-input and unmappable-character sequences.
+            byte[] arr = s.getBytes(StandardCharsets.UTF_8);
+            // Java default UTF-16
+            s = new String(arr, StandardCharsets.UTF_16LE);
+        }
+
+        // remove chars that not Cmd text
+        String regexNotThisCha = "[^a-zA-Z0-9:_. [" + DELIMITER + DELIMITER + "-]]";
+        s = s.replaceAll(regexNotThisCha, "");
+        return s;
     }
 
     private boolean subStringPutToHash(String s) {
