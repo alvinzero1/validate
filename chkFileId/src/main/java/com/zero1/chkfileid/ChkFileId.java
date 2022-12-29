@@ -140,42 +140,42 @@ public class ChkFileId {
         Scanner fileIn;
 
         var dirfile = new File(primaryPath + DELIMITER);
-        if (dirfile.isDirectory()) {
-            for (var str2 : dirfile.list()) {
-                var filePath = primaryPath + DELIMITER + str2;
-
-                try {
-                    if ((new File(filePath)).isDirectory()) {
-                        continue;
-                    }
-
-                    fileIn = new Scanner(new FileInputStream(filePath));
-                    boolean hasNextline = fileIn.hasNextLine();
-                    while (hasNextline) {
-                        textLine = fileIn.nextLine().trim().toLowerCase();
-                        textLine = utf8ToUtf16(textLine);
-
-                        if (textLine.length() <= 1) {
-                            hasNextline = fileIn.hasNextLine();
-                            continue;
-                        } else if (!subStringPutToHash(textLine)) {
-                            errPrint.add(" < " + str2);
-                        }
-                        primaryLineCount++;
-                        hasNextline = fileIn.hasNextLine();
-                    }
-                    fileIn.close();
-
-                } catch (FileNotFoundException e) {
-                    setErrPrint("> Error at FileNotFoundException " + e);
-                    return false;
-                }
-            }
-            return true;
-        } else {
+        if (!dirfile.isDirectory()) {
             errPrint.add("Primary directory NOT correct!");
             return false;
         }
+
+        for (var str2 : dirfile.list()) {
+            var filePath = primaryPath + DELIMITER + str2;
+
+            try {
+                if ((new File(filePath)).isDirectory()) {
+                    continue;
+                }
+
+                fileIn = new Scanner(new FileInputStream(filePath));
+                boolean hasNextline = fileIn.hasNextLine();
+                while (hasNextline) {
+                    textLine = fileIn.nextLine().trim().toLowerCase();
+                    textLine = utf8ToUtf16(textLine);
+
+                    if (textLine.length() <= 1) {
+                        hasNextline = fileIn.hasNextLine();
+                        continue;
+                    } else if (!subStringPutToHash(textLine)) {
+                        errPrint.add(" < " + str2);
+                    }
+                    primaryLineCount++;
+                    hasNextline = fileIn.hasNextLine();
+                }
+                fileIn.close();
+
+            } catch (FileNotFoundException e) {
+                setErrPrint("> Error at FileNotFoundException " + e);
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -290,18 +290,15 @@ public class ChkFileId {
                 case 1 -> {
                     // filename as hashkey
                     if (hashmap.containsKey(tagFilename)) {
-                        ArrayList<String> arr = hashmap.get(tagFilename);
-                        arr.forEach(priFileName -> {
-                            if (priFileName.equalsIgnoreCase(tagKey)) {
-                                matchedArr.add(filepath);
-                            }
-                        });
+                        addIfMatched(tagFilename, tagKey, filepath);
                     }
                 }
                 case 2 -> {
                     if (hashmap.containsKey(tagFilename)) {
                         matchedNameCount++;
-                        if (tagFilename.length() > 20) { //ignore  image.jpg,...,nric_front.jpg,nric front small.jpg
+                        
+                        //ignore  image.jpg,...,nric_front.jpg,nric front small.jpg
+                        if (tagFilename.length() > 20) {
                             matchedFilesOnly.add(filepath + " <> " + hashmap.get(tagFilename));
                         }
                     }
@@ -309,17 +306,24 @@ public class ChkFileId {
                 default -> {
                     // folder(mKey) as hash key,
                     if (hashmap.containsKey(tagKey)) {
-                        ArrayList<String> arr = hashmap.get(tagKey);
-                        arr.forEach(priFileName -> {
-                            if (priFileName.equalsIgnoreCase(tagFilename)) {
-                                matchedArr.add(filepath);
-                            }
-                        });
+                        addIfMatched(tagKey, tagFilename, filepath);
                     }
                 }
             }
             targetFileChkCount++;
         }
+    }
+
+    // add texts if found matched keyvalue in the hashmap array value
+    private void addIfMatched(String hashkey, String target, String texts) {
+
+        ArrayList<String> arr = hashmap.get(hashkey);
+
+        arr.forEach(primaryFileName -> {
+            if (primaryFileName.equalsIgnoreCase(target)) {
+                matchedArr.add(texts);
+            }
+        });
     }
 
     /**
