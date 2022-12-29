@@ -32,12 +32,12 @@ public class App {
         if (m.getMode() == 2) {
             System.out.println( """
                     Portal filename against the txt files:
-                    only compare filename.length > 20, ie. ignore  image.jpg, ...
+                    only compare filename.length >= 9, ie. ignore  image.jpg, ...
                     """ + ">>> matchedNameCount: " + m.getMatchedNameCount());
-            m.getMatchedFilesOnly().forEach(s -> System.out.println(s));
+            m.getMatchedArr().forEach(s -> System.out.println(s));
         }
 
-       System.out.println("Completed. Check " + logfile);
+       System.out.println("Completed. Check " + logfile + " if matched found.");
     }
 }
 

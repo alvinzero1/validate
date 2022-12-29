@@ -32,6 +32,7 @@ public class ChkFileIdTest {
         var m = new ChkFileId(primaryPath, targetPath, 1);
         assertEquals(1, m.getMode());
         assertEquals(7, m.getHashmapSize());
+        assertEquals(1, m.getMatchedArr().size());
     }
 
     @Test
@@ -39,7 +40,7 @@ public class ChkFileIdTest {
         var m = new ChkFileId(primaryPath, targetPath, 2);
         assertEquals(2, m.getMode());
         assertEquals(7, m.getHashmapSize());
-        assertEquals(0, m.getMatchedFilesOnly().size());
+        assertEquals(1, m.getMatchedArr().size());
         assertEquals(1, m.getMatchedNameCount());
     }
 
