@@ -37,7 +37,7 @@ public class App {
             m.getMatchedFilesOnly().forEach(s -> System.out.println(s));
         }
 
-//        System.out.println("Completed. Check " + logfile);
+       System.out.println("Completed. Check " + logfile);
     }
 }
 

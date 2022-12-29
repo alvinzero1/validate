@@ -227,24 +227,23 @@ public class ChkFileId {
         switch (mode) {
             case 2 -> {
                 //  filename as hashkey, full String as hashvalue
-                if (!hashmap.containsKey(filename)) {
-                    hashmap.put(filename, new ArrayList<>());
-                }
-                hashmap.get(filename).add(s);
+                hashmap.computeIfAbsent(filename,
+                        k -> new ArrayList<>()).add(s);
             }
             case 1 -> {
                 //  filename as hashkey, folder as hashvalue
-                if (!hashmap.containsKey(filename)) {
-                    hashmap.put(filename, new ArrayList<>());
-                }
-                hashmap.get(filename).add(mkey);
+                hashmap.computeIfAbsent(filename,
+                        k -> new ArrayList<>()).add(mkey);
             }
             default -> {
                 // folder(mKey) as hash key, filename as hashvalue
-                if (!hashmap.containsKey(mkey)) {
-                    hashmap.put(mkey, new ArrayList<>());
-                }
-                hashmap.get(mkey).add(filename);
+                hashmap.computeIfAbsent(mkey, k -> new ArrayList<>())
+                        .add(filename);
+
+//                if (!hashmap.containsKey(mkey)) {
+//                    hashmap.put(mkey, new ArrayList<>());
+//                }
+//                hashmap.get(mkey).add(filename);
             }
         }
         return true;
