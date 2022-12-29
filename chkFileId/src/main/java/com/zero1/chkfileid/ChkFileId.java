@@ -286,30 +286,20 @@ public class ChkFileId {
             var tagFilename = subfile.getName();
             var filepath = targetPath + DELIMITER + str + DELIMITER + tagFilename;
 
-            switch (mode) {
-                case 1 -> {
-                    // filename as hashkey
-                    if (hashmap.containsKey(tagFilename)) {
-                        addIfMatched(tagFilename, tagKey, filepath);
-                    }
+            if (mode == 1 && hashmap.containsKey(tagFilename)) {
+                // filename as hashkey
+                addIfMatched(tagFilename, tagKey, filepath);
+            } else if (mode == 2 && hashmap.containsKey(tagFilename)) {
+                matchedNameCount++;
+                //ignore  image.jpg,...,nric_front.jpg,nric front small.jpg
+                if (tagFilename.length() > 20) {
+                    matchedFilesOnly.add(filepath + " <> " + hashmap.get(tagFilename));
                 }
-                case 2 -> {
-                    if (hashmap.containsKey(tagFilename)) {
-                        matchedNameCount++;
-                        
-                        //ignore  image.jpg,...,nric_front.jpg,nric front small.jpg
-                        if (tagFilename.length() > 20) {
-                            matchedFilesOnly.add(filepath + " <> " + hashmap.get(tagFilename));
-                        }
-                    }
-                }
-                default -> {
-                    // folder(mKey) as hash key,
-                    if (hashmap.containsKey(tagKey)) {
-                        addIfMatched(tagKey, tagFilename, filepath);
-                    }
-                }
+            } else if (mode == 0 && hashmap.containsKey(tagKey)) {
+                // folder(mKey) as hash key,
+                addIfMatched(tagKey, tagFilename, filepath);
             }
+
             targetFileChkCount++;
         }
     }
