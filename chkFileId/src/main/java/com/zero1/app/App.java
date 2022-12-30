@@ -1,5 +1,7 @@
 /* www.Zero1.Sg 2022Dec */
-package com.zero1.chkfileid;
+package com.zero1.app;
+
+import com.zero1.chkfileid.ChkFileId;
 
 public class App {
 
@@ -19,25 +21,24 @@ public class App {
                 + "> Hashmap size: " + m.getHashmapSize() + "\n"
                 + ">> files count: " + m.getTargetFileChkCount() + "\n"
                 + ">> Error size: " + m.getErrPrint().size());
-        
+
 //        m.getErrPrint().forEach(System.out::println);
 //        System.out.println("\nMatched 'folder file':");
 //        m.getMatchedArr().forEach(System.out::println);
-
         if (m.getMode() != 2) {
             System.out.println(">> matched found: " + m.getMatchedArr().size());
         }
 
 //        m.printErrlogNMatchedToFile(logfile); // OR
         if (m.getMode() == 2) {
-            System.out.println( """
+            System.out.println("""
                     Portal filename against the txt files:
-                    only compare filename.length > 20, ie. ignore  image.jpg, ...
+                    only compare filename.length >= 9, ie. ignore  image.jpg, ...
                     """ + ">>> matchedNameCount: " + m.getMatchedNameCount());
-            m.getMatchedFilesOnly().forEach(s -> System.out.println(s));
+            m.getMatchedArr().forEach(s -> System.out.println(s));
         }
 
-//        System.out.println("Completed. Check " + logfile);
+        System.out.println("Completed. Check " + logfile + " if matched found.");
     }
 }
 
