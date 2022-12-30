@@ -45,19 +45,8 @@ public class ChkFileIdTest {
     }
 
     @Test
-    public void testErrPrint() {
-        var m = new ChkFileId(primaryPath, targetPath);
-        m.setErrPrint("test");
-        m.getErrPrint();
-//        m.getErrPrint().forEach(s -> {
-//            System.out.println(">>MainTest>> "+s);
-//        });
-        assertEquals(6, m.getErrPrint().size());
-    }
-
-    @Test
     public void testUtf8ToUtf16() {
-        
+
         String s = ChkFileId.utf8ToUtf16("t\u0000e\u0000s\u0000t");
         assertEquals("test", s);
 
@@ -65,4 +54,15 @@ public class ChkFileIdTest {
         assertEquals("teSt_ c:\\a-bc_cd.png", s);
     }
 
+    @Test
+    public void testErrPrint() {
+        var m = new ChkFileId(primaryPath, targetPath);
+        m.setErrPrint("testErrPrint at mode " + m.getMode());
+        assertEquals(6, m.getErrPrint().size());
+
+//        System.out.println(m.getInfo());
+//        m.getErrPrint().forEach(s -> {
+//            System.out.println(">> " + s);
+//        });
+    }
 }

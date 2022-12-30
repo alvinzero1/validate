@@ -156,7 +156,7 @@ public class ChkFileId {
                         hasNextline = fileIn.hasNextLine();
                         continue;
                     } else if (!subStringPutToHash(textLine)) {
-                        errPrint.add(" < " + str2);
+                        errPrint.add("< not put to Hashmap: " + str2 + ">" + textLine);
                     }
                     primaryLineCount++;
                     hasNextline = fileIn.hasNextLine();
@@ -197,8 +197,8 @@ public class ChkFileId {
     }
 
     /**
-     * Splitted string with delimiter. Folder should be 32chars. And put into
-     * hashmap.
+     * Splitted string with delimiter. Folder should be 32chars. Split by
+     * backlash need to be 3 or more parts. Put into hashmap.
      *
      * @param String of full path.
      * @return true if ok
@@ -218,7 +218,7 @@ public class ChkFileId {
 
         // check if right key lgth
         if (mkey.length() != mkeyLength) {
-            errPrint.add("> key lgth err: " + s);
+            errPrint.add("> key lgth " + mkeyLength + " chars " + " err: " + s);
             return false;
         }
 
@@ -238,10 +238,6 @@ public class ChkFileId {
                 hashmap.computeIfAbsent(mkey,
                         k -> new ArrayList<>()).add(filename);
 
-//                if (!hashmap.containsKey(mkey)) {
-//                    hashmap.put(mkey, new ArrayList<>());
-//                }
-//                hashmap.get(mkey).add(filename);
             }
         }
         return true;
@@ -267,7 +263,7 @@ public class ChkFileId {
                     dirfileCompareHash(dirfile, str);
 
                 } else {
-                    errPrint.add(">> " + dirfile.getName());
+                    errPrint.add(">> not directory: " + dirfile.getName());
                 }
             }
             return true;
