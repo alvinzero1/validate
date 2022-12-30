@@ -6,7 +6,8 @@ package com.zero1.chkfileid;
  */
 public interface Paths {
 
-    public boolean addPrimarypathFilenameToHashmap(String primaryPath);
+    public boolean addPrimarypathFilenameToHashmap();
 
-    public boolean targetFilesVerifyByHash(String targetPath);
+    public boolean targetFilesVerifyByHash();
+
 }
