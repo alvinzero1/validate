@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Scanner;
 public class ChkFileId implements Paths {
 
     private static final String DELIMITER = "\\"; // Window system
-    private HashMap<String, ArrayList<String>> hashmap;
+    private Map<String, ArrayList<String>> hashmap;
     private ArrayList<String> matchedArr, errPrint;
     private int primaryLineCount = 0, targetFileChkCount = 0, mode = 0, matchedNameCount = 0;
     private String primaryPath, targetPath, info = "";
@@ -77,6 +78,10 @@ public class ChkFileId implements Paths {
 
     public int getHashmapSize() {
         return hashmap.size();
+    }
+
+    public void setHashmap(Map<String, ArrayList<String>> map) {
+        this.hashmap = map;
     }
 
     /**
